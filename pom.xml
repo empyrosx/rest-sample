@@ -1,0 +1,111 @@
+<project>
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>com.github.empyrosx</groupId>
+   <version>1.0</version>
+   <artifactId>sample</artifactId>
+   <packaging>war</packaging>
+   <name>project</name>
+
+    <properties>
+        <deltaspike.version>1.8.0</deltaspike.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.deltaspike.distribution</groupId>
+                <artifactId>distributions-bom</artifactId>
+                <version>${deltaspike.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+   <dependencies>
+      <dependency>
+         <groupId>javax</groupId>
+         <artifactId>javaee-api</artifactId>
+         <version>7.0</version>
+         <scope>provided</scope>
+      </dependency>
+
+       <dependency>
+           <groupId>org.apache.deltaspike.core</groupId>
+           <artifactId>deltaspike-core-api</artifactId>
+           <scope>compile</scope>
+       </dependency>
+
+       <dependency>
+           <groupId>org.apache.deltaspike.core</groupId>
+           <artifactId>deltaspike-core-impl</artifactId>
+           <scope>runtime</scope>
+       </dependency>
+
+       <dependency>
+           <groupId>org.apache.deltaspike.modules</groupId>
+           <artifactId>deltaspike-jpa-module-api</artifactId>
+           <version>${deltaspike.version}</version>
+           <scope>compile</scope>
+       </dependency>
+
+       <dependency>
+           <groupId>org.apache.deltaspike.modules</groupId>
+           <artifactId>deltaspike-jpa-module-impl</artifactId>
+           <version>${deltaspike.version}</version>
+           <scope>runtime</scope>
+       </dependency>
+
+       <dependency>
+           <groupId>org.apache.deltaspike.modules</groupId>
+           <artifactId>deltaspike-data-module-api</artifactId>
+           <scope>compile</scope>
+       </dependency>
+
+       <dependency>
+           <groupId>org.apache.deltaspike.modules</groupId>
+           <artifactId>deltaspike-data-module-impl</artifactId>
+           <scope>runtime</scope>
+       </dependency>
+
+       <dependency>
+           <groupId>io.swagger</groupId>
+           <artifactId>swagger-jaxrs</artifactId>
+           <version>1.5.0</version>
+       </dependency>
+   </dependencies>
+
+
+    <build>
+        <defaultGoal>clean install</defaultGoal>
+        <finalName>sample</finalName>
+
+        <plugins>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>com.sebastian-daschner</groupId>
+                <artifactId>jaxrs-analyzer-maven-plugin</artifactId>
+                <version>0.15</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>analyze-jaxrs</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Available backends, defaults to plaintext -->
+                            <!-- <backend>plaintext</backend> -->
+                            <backend>swagger</backend>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+
+    </build>
+</project>
