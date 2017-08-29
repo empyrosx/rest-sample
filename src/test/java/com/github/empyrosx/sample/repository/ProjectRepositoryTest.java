@@ -1,29 +1,26 @@
 package com.github.empyrosx.sample.repository;
 
+import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+
 import com.github.database.rider.core.DBUnitRule;
-import com.github.database.rider.core.api.connection.ConnectionHolder;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.empyrosx.sample.rest.model.Project;
 import org.apache.deltaspike.testcontrol.api.junit.CdiTestRunner;
 import org.flywaydb.core.Flyway;
-import org.hibernate.Session;
-import org.hibernate.internal.SessionImpl;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.List;
-
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.contains;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by empyros on 28.08.17.
@@ -31,7 +28,7 @@ import static org.junit.Assert.*;
 @RunWith(CdiTestRunner.class)
 public class ProjectRepositoryTest {
 
-//    private static String DB_URL = "jdbc:hsqldb:file:test";
+    //    private static String DB_URL = "jdbc:hsqldb:file:test";
     private static String DB_URL = "jdbc:hsqldb:" + Paths.get("target").toAbsolutePath().toString() +
             "/sample";
 
@@ -51,37 +48,38 @@ public class ProjectRepositoryTest {
 
     @BeforeClass
     public static void initMigration() throws SQLException {
+
+//        try {
+//            LogManager.getLogManager().readConfiguration(ProjectRepositoryTest.class.getResourceAsStream("logging.properties"));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+        System.out.println(DB_URL);
         flyway = new Flyway();
         flyway.setDataSource(DB_URL, "sa", "");
         flyway.setLocations("db/migration");
         flyway.setValidateOnMigrate(true);
         flyway.migrate();
 
-        connection = flyway.getDataSource().getConnection();
-        try (Statement stmt = connection.createStatement()) {
-            stmt.addBatch("INSERT INTO PUBLIC.project(id, name) VALUES (1, 'Erich')");
-            stmt.addBatch("INSERT INTO PUBLIC.project(id, name) VALUES (2, 'Richard')");
-            int[] result = stmt.executeBatch();
-            assertEquals(result.length, 2);
-        }
+//        connection = flyway.getDataSource().getConnection();
+//        try (Statement stmt = connection.createStatement()) {
+//            stmt.addBatch("INSERT INTO PUBLIC.project(id, name) VALUES (1, 'Erich')");
+//            stmt.addBatch("INSERT INTO PUBLIC.project(id, name) VALUES (2, 'Richard')");
+//            int[] result = stmt.executeBatch();
+//            assertEquals(result.length, 2);
+//        }
     }
 
     @Test
-    @DataSet(value = "all-projects.xml")
+    @DataSet(value = "all-projects.xml", cleanBefore = true)
     public void testGetAllProjects() throws Exception {
-//        Statement statement = connection.createStatement();
-//        ResultSet resultSet = statement.executeQuery("select * from project");
-//        System.out.println(resultSet.getString(1));
-
-        Query q = entityManager.createNativeQuery("select count(*) from project");
-        int result = q.getFirstResult();
-        System.out.println(result);
-
-
-        System.out.println(entityManager);
-        System.out.println(repository);
-
         List<Project> actual = repository.findAll();
         assertEquals(2, actual.size());
+
+        List<Project> expected = new ArrayList<>();
+        expected.add(new Project(1, "Web-consolidation"));
+        expected.add(new Project(2, "Web-budget"));
+        assertThat(actual, contains(expected));
     }
 }

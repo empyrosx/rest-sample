@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Created by empyros on 26.08.17.
  */
 @Entity
-@Table(name = "projects")
+@Table(name = "project")
 @XmlRootElement
 @XmlAccessorType(value = XmlAccessType.FIELD)
 public class Project {
@@ -55,5 +55,32 @@ public class Project {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Project{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Project project = (Project) o;
+
+        if (id != project.id) return false;
+        return name.equals(project.name);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + name.hashCode();
+        return result;
     }
 }
