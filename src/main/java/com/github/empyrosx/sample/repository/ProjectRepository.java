@@ -1,6 +1,6 @@
 package com.github.empyrosx.sample.repository;
 
-import com.github.empyrosx.rest.model.Project;
+import com.github.empyrosx.sample.rest.model.Project;
 import org.apache.deltaspike.data.api.EntityRepository;
 import org.apache.deltaspike.data.api.Repository;
 

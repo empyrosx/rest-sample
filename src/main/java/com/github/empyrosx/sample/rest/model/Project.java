@@ -1,4 +1,4 @@
-package com.github.empyrosx.rest.model;
+package com.github.empyrosx.sample.rest.model;
 
 
 import javax.persistence.Column;

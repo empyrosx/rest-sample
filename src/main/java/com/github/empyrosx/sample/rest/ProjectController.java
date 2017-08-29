@@ -1,6 +1,6 @@
-package com.github.empyrosx.rest;
+package com.github.empyrosx.sample.rest;
 
-import com.github.empyrosx.rest.model.Project;
+import com.github.empyrosx.sample.rest.model.Project;
 import com.github.empyrosx.sample.service.ProjectService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

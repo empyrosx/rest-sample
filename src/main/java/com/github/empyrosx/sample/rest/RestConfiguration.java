@@ -1,4 +1,4 @@
-package com.github.empyrosx.rest;
+package com.github.empyrosx.sample.rest;
 
 import io.swagger.jaxrs.config.BeanConfig;
 

@@ -1,6 +1,6 @@
 package com.github.empyrosx.sample.service;
 
-import com.github.empyrosx.rest.model.Project;
+import com.github.empyrosx.sample.rest.model.Project;
 
 import java.util.List;
 
