@@ -1,6 +1,5 @@
-package com.github.empyrosx.sample.rest;
+package com.github.empyrosx.sample.testing.rest.engine;
 
-import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
@@ -18,16 +17,12 @@ public class RestRequest {
 
     private String uri;
     private int port;
-    private String basicCreds;
+    private String basicCredentials;
 
     private MediaType contentType = MediaType.APPLICATION_XML_TYPE;
     private MultivaluedMap<String, Object> headers = new MultivaluedHashMap<>();
     private Object body;
     private Map<String, Object> queryParams = new HashMap<>();
-
-    private Response.Status expectedStatus;
-
-    private String expectedLocationUri;
 
     public RestRequest(String uri, int port) {
         this.uri = uri;
@@ -57,25 +52,15 @@ public class RestRequest {
 
     public RestRequest basicAuth(String userName, String password) {
         try {
-            basicCreds = URLEncoder.encode(userName, "UTF-8") + ":" + URLEncoder.encode(password, "UTF-8");
+            basicCredentials = URLEncoder.encode(userName, "UTF-8") + ":" + URLEncoder.encode(password, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            basicCreds = userName + ":" + password;
+            basicCredentials = userName + ":" + password;
         }
         return this;
     }
 
     public RestRequest queryParam(String param, Object value) {
         queryParams.put(param, value);
-        return this;
-    }
-
-    public RestRequest expectStatus(Response.Status expectedStatus) {
-        this.expectedStatus = expectedStatus;
-        return this;
-    }
-
-    public RestRequest expectLocation(String expectedLocationUri) {
-        this.expectedLocationUri = expectedLocationUri;
         return this;
     }
 
@@ -96,11 +81,11 @@ public class RestRequest {
     }
 
     private String doHttpMethod(String method) {
-        String baseUri = basicCreds != null ? "http://" + basicCreds + "@localhost" : "http://localhost";
+        String baseUri = basicCredentials != null ? "http://" + basicCredentials + "@localhost" : "http://localhost";
         UriBuilder path = UriBuilder.fromUri(baseUri).port(port).path(uri);
         WebTarget webTarget = ClientBuilder.newBuilder().build().target(path.build());
 
-        for (Map.Entry<String, Object> entry: queryParams.entrySet()) {
+        for (Map.Entry<String, Object> entry : queryParams.entrySet()) {
             webTarget = webTarget.queryParam(entry.getKey(), entry.getValue());
         }
 
@@ -115,42 +100,15 @@ public class RestRequest {
             throw new RuntimeException(method + " failed", e);
         }
 
-//        assertExpectedStatus(response);
-//        assertLocation(response);
         return toString(response);
     }
 
-    @SuppressWarnings("unchecked")
     private String toString(Response response) {
         Response.Status responseStatus = Response.Status.fromStatusCode(response.getStatus());
 
         if (responseStatus == Response.Status.NO_CONTENT) {
             return null;
         }
-        if (responseStatus.getFamily() != Response.Status.Family.SUCCESSFUL && responseStatus != expectedStatus) {
-            throw new ClientErrorException(response);
-        } else {
-            return response.readEntity(String.class);
-        }
+        return response.readEntity(String.class);
     }
-
-//    private void assertExpectedStatus(Response response) {
-//        if (expectedStatus != null) {
-//            Response.Status responseStatus = Response.Status.fromStatusCode(response.getStatus());
-//
-//            assertThat(responseStatus)
-//                    .as("Expected response with status " + expectedStatus.getStatusCode() + " (" + expectedStatus + ") but got response with status " + response.getStatus() + " (" + responseStatus + ")")
-//                    .isEqualTo(expectedStatus);
-//        }
-//    }
-//
-//    private void assertLocation(Response response) {
-//        if (expectedLocationUri != null) {
-//            String actualLocation = response.getLocation().toString();
-//            assertThat(actualLocation).
-//                    as("Expected location '" + expectedLocationUri + "' but got " + actualLocation).
-//                    contains(expectedLocationUri);
-//        }
-//    }
-
 }

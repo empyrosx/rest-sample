@@ -1,5 +1,8 @@
-package com.github.empyrosx.sample.rest;
+package com.github.empyrosx.sample.testing.rest;
 
+import com.github.empyrosx.sample.testing.rest.engine.DependencyInjector;
+import com.github.empyrosx.sample.testing.rest.engine.JaxrsServer;
+import com.github.empyrosx.sample.testing.rest.engine.RestRequest;
 import org.jboss.resteasy.spi.ResteasyDeployment;
 import org.junit.After;
 import org.junit.Before;
@@ -11,12 +14,12 @@ public abstract class BaseRestTest {
 
     private Class[] controllerClasses;
     private JaxrsServer jaxrsServer;
+    private DependencyInjector dependencyInjector;
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        DependencyInjector.getInstance().reset();
-        DependencyInjector.getInstance().injectDependencies(this);
+        dependencyInjector = new DependencyInjector();
+        dependencyInjector.createMocks(this);
 
         controllerClasses = getControllers();
         startJaxRsServer();
@@ -30,7 +33,7 @@ public abstract class BaseRestTest {
             } catch (Exception e1) {
                 throw new IllegalArgumentException(e1);
             }
-            DependencyInjector.getInstance().injectDependencies(resourceInstance);
+            dependencyInjector.injectDependencies(resourceInstance);
             getDeployment().getRegistry().addSingletonResource(resourceInstance);
         }
     }
@@ -42,11 +45,11 @@ public abstract class BaseRestTest {
         shutdownJaxRsServer();
     }
 
-    public RestRequest jsonRequest(String uri) {
+    protected RestRequest jsonRequest(String uri) {
         return new RestRequest(uri, jaxrsServer.getLocalPort()).accept(MediaType.APPLICATION_JSON_TYPE);
     }
 
-    public void startJaxRsServer() {
+    private void startJaxRsServer() {
         jaxrsServer = new JaxrsServer();
         jaxrsServer.setPort(0);
         jaxrsServer.start();
@@ -54,12 +57,12 @@ public abstract class BaseRestTest {
         initControllers(controllerClasses);
     }
 
-    public void shutdownJaxRsServer() {
+    private void shutdownJaxRsServer() {
         jaxrsServer.stop();
         getDeployment().stop();
     }
 
-    public ResteasyDeployment getDeployment() {
+    protected ResteasyDeployment getDeployment() {
         return jaxrsServer.getDeployment();
     }
 }

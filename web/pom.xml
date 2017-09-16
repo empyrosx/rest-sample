@@ -94,7 +94,14 @@
         <dependency>
             <groupId>com.github.empyrosx.sample</groupId>
             <artifactId>db</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.empyrosx.sample</groupId>
+            <artifactId>rest-testing-engine</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

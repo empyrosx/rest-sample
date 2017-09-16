@@ -2,6 +2,7 @@ package com.github.empyrosx.sample.rest;
 
 import com.github.empyrosx.sample.model.Project;
 import com.github.empyrosx.sample.service.ProjectService;
+import com.github.empyrosx.sample.testing.rest.BaseRestTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

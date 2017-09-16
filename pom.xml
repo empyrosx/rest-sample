@@ -35,5 +35,6 @@
         <module>parent</module>
         <module>db</module>
         <module>web</module>
+        <module>rest-testing-engine</module>
     </modules>
 </project>

@@ -1,11 +1,10 @@
-package com.github.empyrosx.sample.rest;
+package com.github.empyrosx.sample.testing.rest.engine;
 
-import org.apache.commons.lang3.reflect.FieldUtils;
 import org.jboss.resteasy.plugins.server.tjws.TJWSEmbeddedJaxrsServer;
 
 import java.net.ServerSocket;
 
-public class JaxrsServer  extends TJWSEmbeddedJaxrsServer {
+public class JaxrsServer extends TJWSEmbeddedJaxrsServer {
 
     private int port;
 
@@ -18,15 +17,11 @@ public class JaxrsServer  extends TJWSEmbeddedJaxrsServer {
     private int gerPort() {
         Object acceptor = getFromPrivateField(server, "acceptor");
         Object socket = getFromPrivateField(acceptor, "socket");
-        return ((ServerSocket )socket).getLocalPort();
+        return ((ServerSocket) socket).getLocalPort();
     }
 
     private Object getFromPrivateField(Object obj, String fieldName) {
-        try {
-            return FieldUtils.readField(obj, fieldName, true);
-        } catch (IllegalAccessException e) {
-            throw new IllegalStateException("Can't access field " + fieldName);
-        }
+        return InjectionUtils.readFieldValue(obj, fieldName);
     }
 
     public int getLocalPort() {
