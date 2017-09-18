@@ -6,31 +6,6 @@
     <packaging>pom</packaging>
     <name>sample</name>
 
-
-    <build>
-        <defaultGoal>clean install</defaultGoal>
-        <finalName>sample</finalName>
-
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
     <modules>
         <module>parent</module>
         <module>db</module>

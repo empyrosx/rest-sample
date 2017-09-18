@@ -27,6 +27,13 @@ public class ProjectController {
         return service.getAll();
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/one")
+    public Project getOne() {
+        return new Project(1L, "Web-cons");
+    }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public void add(Project project) {

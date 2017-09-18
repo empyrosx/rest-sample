@@ -64,23 +64,30 @@ public class RestRequest {
         return this;
     }
 
-    public String get() {
-        return doHttpMethod("GET");
+    public ResultActions get() {
+        Response result = doHttpMethod("GET");
+        return new ResultActions() {
+            @Override
+            public ResultActions andExpect(ResultMatcher matcher) throws Exception {
+                matcher.match(result);
+                return this;
+            }
+        };
     }
 
-    public String put() {
+    public Response put() {
         return doHttpMethod("PUT");
     }
 
-    public String post() {
+    public Response post() {
         return doHttpMethod("POST");
     }
 
-    public String delete() {
+    public Response delete() {
         return doHttpMethod("DELETE");
     }
 
-    private String doHttpMethod(String method) {
+    private Response doHttpMethod(String method) {
         String baseUri = basicCredentials != null ? "http://" + basicCredentials + "@localhost" : "http://localhost";
         UriBuilder path = UriBuilder.fromUri(baseUri).port(port).path(uri);
         WebTarget webTarget = ClientBuilder.newBuilder().build().target(path.build());
@@ -100,7 +107,7 @@ public class RestRequest {
             throw new RuntimeException(method + " failed", e);
         }
 
-        return toString(response);
+        return response;
     }
 
     private String toString(Response response) {
